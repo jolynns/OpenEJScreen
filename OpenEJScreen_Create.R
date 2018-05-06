@@ -8,8 +8,11 @@ library(arcgisbinding)
 # Confirm ArcPro License
 arc.check_product()
 
-# Set location of EJScreeen Data file for the State
+# Set location of the feature class that contains the EJScreeen data for the State. This file should only contain data
+# for the state you are running the screening on.
 myData <- "C:/GIS/Capstone/NJ_Screen/NJ_Screen.gdb/EJSCREEN_StatePctile_v4_NJ"
+# Where to write the new shape file
+myOutput <- "C:/GIS/Capstone/NJ_Screen/NJ_Screen.gdb/OEJScreen_NJ"
 
 # open NJ selected data
 Ejscreen_NJ <- arc.open(path = myData)
@@ -26,10 +29,10 @@ EJS_USED <- arc.select(object = Ejscreen_NJ, fields = c('ID','ST_ABBREV','ACSTOT
                                                         'P_LESHSPCT'), where_clause = "ACSTOTPOP >= 100")
 
 # Step 1
-# Exposure Component Score = Average(OzonePctile, PM2.5Pctile, NATAdpmPctile, leadPctile, DryCleanersPctile, TrafficPctile, RMPPctile)
+# Exposure Component Score = Average(PM2.5Pctile, OzonePctile, NATAdpmPctile, TrafficPctile, leadPctile,  RMPPctile)
 # Environmental Component Score = Average(SperfundPctile, TSDFPctile, wastewaterPctile) X 0.5
-# Sensitive Population Component Score = Average(RespiratoryPctile, CancerPctile)
-# Socioeconomic Component Score = Average(EducationPctile, LinguisticIsoPctile, PovertyPctile, MinorityPctile)
+# Sensitive Population Component Score = Average(CancerPctile, RespiratoryPctile)
+# Socioeconomic Component Score = Average(MinorityPctile, PovertyPctile, LinguisticIsoPctile, EducationPctile)
 
 # Prep
 # assign indicators to their proper component
@@ -42,7 +45,7 @@ EJS_SocioEco_pctiles <- EJS_USED[ c('P_MINORPCT', 'P_LWINCPCT', 'P_LNGISPCT', 'P
 Expos_CS <- apply(EJS_Expos_pctiles,1, FUN = mean)
 Env_CS <- (apply(EJS_Env_pctiles,1, FUN = mean)) * 0.5
 SensPop_CS <- apply(EJS_SensPop_pctiles,1, FUN = mean)
-SocioEco <- apply(EJS_SocioEco_pctiles,1, FUN = mean)
+SocioEco_CS <- apply(EJS_SocioEco_pctiles,1, FUN = mean)
 
 # Step 2
 # Pollution Burden = (Exposure Component Score + Environmental Component Score) / (1 + 0.5)
@@ -50,7 +53,7 @@ SocioEco <- apply(EJS_SocioEco_pctiles,1, FUN = mean)
 
 # Average further to get the Pollution Burden and Population Char.
 PolBurden <- ((Expos_CS + Env_CS)/1.5)
-PopChar <- ((SensPop_CS + SocioEco)/2)
+PopChar <- ((SensPop_CS + SocioEco_CS/2)
 
 # Step 3
 # Scaled Pollution Burden = (Pollution Burden / Highest Pollution Burden) X 10
@@ -84,6 +87,6 @@ EJS_USED$OEJS_Rank <- OEJScreen_Rank
 EJS_USED$OEJS_PctRank <- OEJScreen_PctRank
 
 # Write out the new OEJScree_NJ and use the projection from EJScreen_NJ
-arc.write('C:/GIS/Capstone/NJ_Screen/NJ_Screen.gdb/OEJScreen_NJ',EJS_USED, shape_info = arc.shapeinfo(Ejscreen_NJ) )
+arc.write(myOutput, EJS_USED, shape_info = arc.shapeinfo(Ejscreen_NJ) )
 
 
