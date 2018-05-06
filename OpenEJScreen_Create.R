@@ -12,7 +12,7 @@ arc.check_product()
 # for the state you are running the screening on.
 myData <- "C:/GIS/Capstone/NJ_Screen/NJ_Screen.gdb/EJSCREEN_StatePctile_v4_NJ"
 # Where to write the new shape file
-myOutput <- "C:/GIS/Capstone/NJ_Screen/NJ_Screen.gdb/OEJScreen_NJ"
+myOutput <- "C:/GIS/Capstone/NJ_Screen/NJ_Screen.gdb/OEJScreen_NJ_Test"
 
 # open NJ selected data
 Ejscreen_NJ <- arc.open(path = myData)
@@ -53,7 +53,7 @@ SocioEco_CS <- apply(EJS_SocioEco_pctiles,1, FUN = mean)
 
 # Average further to get the Pollution Burden and Population Char.
 PolBurden <- ((Expos_CS + Env_CS)/1.5)
-PopChar <- ((SensPop_CS + SocioEco_CS/2)
+PopChar <- ((SensPop_CS + SocioEco_CS)/2)
 
 # Step 3
 # Scaled Pollution Burden = (Pollution Burden / Highest Pollution Burden) X 10
