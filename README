@@ -1,3 +1,35 @@
 OpenEJScreen - Environmental Justice Cumulative Impact Assessment
 By Jolynn Schmidt
 email jolynns@gmail.com
+
+Installing and using R-Bridge
+
+ESRI has several tutorials on installing and using the R-Bridge. ESRI Canada has a
+set of PDF files or ESRI has an online tutorial you can follow.
+
+https://esricanada-ce.github.io/r-arcgis-tutorials/
+https://esricanada-ce.github.io/r-arcgis-tutorials/1-Getting-Started.pdf
+https://learn.arcgis.com/en/projects/analyze-crime-using-statistics-and-the-r-arcgis-bridge/lessons/install-the-r-arcgis-bridge-and-start-statistical-analysis.htm
+
+Once the R-Bridge has been installed perform the following steps to create an OEJS assessment.
+
+1. Download the data from the EPA, unzip and add it to a new ArcGIS Pro project.
+ftp://newftp.epa.gov/EJSCREEN/2017/EJSCREEN_2017_StatePctile.gdb.zip
+
+2. Select by attribute the state you want to perform the OpenEJScreen analysis on and create a new feature class with the selection.
+
+3. Using R-Studio open the OpenEJScreen_Create.R script and edit the location of the input and output files.
+input = your newly created feature class
+output = the location of where you will write out the results of OpenEJScreen. Please note that the R script will not overwrite a file with the same name.
+
+3. Save your changes and run the R script.
+
+4. Back in ArcGIS Pro you should have a new feature class that will contain the following three fields.
+
+OEJS_Score - The score between 0 - 100
+OEJS_Rank - The rank for the score
+OEJS_PctRank - The percentile for the rank
+
+5. Using the percentile ranking you can view OEJS_PctRank on a graduated scale using a 5 class quantile to find the population
+at the top 20 percentile that is disproportionately impacted.
+
